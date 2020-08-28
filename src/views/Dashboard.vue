@@ -8,5 +8,8 @@
 <script>
 export default {
   name: "Dashboard",
+  created() {
+    this.$store.dispatch("getUserData");
+  },
 };
 </script>

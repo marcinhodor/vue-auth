@@ -20,6 +20,9 @@ export default new Vuex.Store({
       state.idToken = null;
       state.userId = null;
     },
+    saveUserData(state, userData) {
+      state.userEmail = userData.email;
+    },
   },
   actions: {
     signup({ commit }, authData) {
@@ -63,6 +66,21 @@ export default new Vuex.Store({
           localStorage.setItem("userId_vue_auth", res.data.localId);
           router.push("/dashboard");
         })
+        .catch((error) => console.log(error));
+    },
+    getUserData({ commit }) {
+      axios
+        .post(
+          `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${process.env.VUE_APP_FIREBASE_API_KEY}`,
+          {
+            idToken: this.state.idToken,
+          }
+        )
+        .then((res) =>
+          commit("saveUserData", {
+            email: res.data.users[0].email,
+          })
+        )
         .catch((error) => console.log(error));
     },
     logout({ commit }) {
